@@ -1229,7 +1229,7 @@
     <div class="container">
         <header class="header">
             <h1>Para Minha Pretinha</h1>
-            <p>Feliz 1 século de namoro ❤️</p>
+            <p>Feliz 1 ano de casados ❤️</p>
         </header>
 
         <main class="love-card">
@@ -1442,160 +1442,168 @@
         // Criar partículas continuamente
         setInterval(createParticle, 300);
 
-        // Função principal da surpresa
+        // ====== CONTROLE (evita clicar e rodar 10x seguidas) ======
+        let surpriseRunning = false;
+
+        // Função principal da surpresa (SUBSTITUA A SUA)
         function showSurprise() {
-            const message = document.getElementById('specialMessage');
-            message.classList.add('show');
-            
-            // Explosão de corações vermelhos
-            createHeartExplosion();
-            
-            // NOVA FUNÇÃO: Animação épica "TE AMO"
-            createTeAmoAnimation();
-            
-            // Vibração
-            if (navigator.vibrate) {
-                navigator.vibrate([200, 100, 200, 100, 300]);
-            }
-            
-            // Mudança temporária da cor de fundo
-            document.body.style.background = 'linear-gradient(135deg, #ff0040, #990026, #000000, #ff1744)';
-            document.body.style.backgroundSize = '400% 400%';
-            document.body.style.animation = 'gradient-shift 2s ease infinite';
-            
+        if (surpriseRunning) return; // evita spam
+        surpriseRunning = true;
+
+        const message = document.getElementById('specialMessage');
+        message.classList.add('show');
+
+        createHeartExplosion(14);   // era 30
+        createTeAmoAnimation({
+            floatingCount: 4,         // era 8
+            rainCount: 6              // era 15
+        });
+
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 300]);
+
+        document.body.style.background = 'linear-gradient(135deg, #ff0040, #990026, #000000, #ff1744)';
+        document.body.style.backgroundSize = '400% 400%';
+        document.body.style.animation = 'gradient-shift 2s ease infinite';
+
+        setTimeout(() => {
+            document.body.style.background = 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a0a0a 100%)';
+            document.body.style.animation = '';
+        }, 2500); // era 4000 (mais curto = menos tempo pesado)
+
+        // Partículas especiais (era 50)
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => createParticle(), i * 80);
+        }
+
+        // libera depois que o “pico” passa
+        setTimeout(() => { surpriseRunning = false; }, 3200);
+        }
+
+        // Animação épica "TE AMO" (SUBSTITUA A SUA)
+        function createTeAmoAnimation({ floatingCount = 4, rainCount = 6 } = {}) {
+        const teAmoTexts = [
+            'TE AMO ❤️',
+            '💖 TE AMO MUITO 💖',
+            'EU TE AMO!',
+            '❤️ MEU AMOR ❤️',
+            'TE AMO PARA SEMPRE!',
+            '💕 VOCÊ É TUDO 💕',
+            'MEU CORAÇÃO É SEU!',
+            '🥰 TE AMO DEMAIS 🥰'
+        ];
+
+        // texto central (mantém igual)
+        const mainTeAmo = document.createElement('div');
+        mainTeAmo.innerHTML = 'TE AMO ❤️';
+        mainTeAmo.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff0040, #ffd700, #ff0040);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            z-index: 9999;
+            pointer-events: none;
+            animation: te-amo-main 3s ease-out forwards; /* era 4s */
+            text-shadow: 0 0 30px rgba(255, 0, 64, 0.8);
+            filter: drop-shadow(0 0 20px rgba(255, 0, 64, 1));
+            will-change: transform, opacity;
+        `;
+        document.body.appendChild(mainTeAmo);
+        setTimeout(() => mainTeAmo.remove(), 3000);
+
+        // flutuantes (era 8)
+        for (let i = 0; i < floatingCount; i++) {
             setTimeout(() => {
-                document.body.style.background = 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a0a0a 100%)';
-                document.body.style.animation = '';
-            }, 4000);
-            
-            // Criar mais partículas especiais
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => createParticle(), i * 50);
-            }
-        }
+            const teAmo = document.createElement('div');
+            teAmo.innerHTML = teAmoTexts[Math.floor(Math.random() * teAmoTexts.length)];
 
-        // NOVA FUNÇÃO: Animação épica "TE AMO"
-        function createTeAmoAnimation() {
-            // Criar múltiplas animações "TE AMO"
-            const teAmoTexts = [
-                'TE AMO ❤️',
-                '💖 TE AMO MUITO 💖',
-                'EU TE AMO!',
-                '❤️ MEU AMOR ❤️',
-                'TE AMO PARA SEMPRE!',
-                '💕 VOCÊ É TUDO 💕',
-                'MEU CORAÇÃO É SEU!',
-                '🥰 TE AMO DEMAIS 🥰'
-            ];
-            
-            // Animação central principal
-            const mainTeAmo = document.createElement('div');
-            mainTeAmo.innerHTML = 'TE AMO ❤️';
-            mainTeAmo.style.cssText = `
+            const startX = Math.random() * window.innerWidth;
+            const startY = Math.random() * window.innerHeight;
+
+            teAmo.style.cssText = `
                 position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 4rem;
+                left: ${startX}px;
+                top: ${startY}px;
+                font-size: ${Math.random() * 1.2 + 1.4}rem;
                 font-weight: bold;
-                background: linear-gradient(45deg, #ff0040, #ffd700, #ff0040);
-                background-size: 200% 200%;
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                z-index: 9999;
+                color: ${Math.random() > 0.5 ? '#ff0040' : '#ffd700'};
+                z-index: 9998;
                 pointer-events: none;
-                animation: te-amo-main 4s ease-out forwards;
-                text-shadow: 0 0 30px rgba(255, 0, 64, 0.8);
-                filter: drop-shadow(0 0 20px rgba(255, 0, 64, 1));
+                animation: te-amo-float 2.4s ease-out forwards; /* era 3s */
+                text-shadow: 0 0 15px rgba(255, 0, 64, 0.8);
+                filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+                will-change: transform, opacity;
             `;
-            document.body.appendChild(mainTeAmo);
-            setTimeout(() => mainTeAmo.remove(), 4000);
+            document.body.appendChild(teAmo);
+            setTimeout(() => teAmo.remove(), 2400);
+            }, i * 220);
+        }
 
-            // Múltiplos "TE AMO" flutuantes
-            for (let i = 0; i < 8; i++) {
-                setTimeout(() => {
-                    const teAmo = document.createElement('div');
-                    const randomText = teAmoTexts[Math.floor(Math.random() * teAmoTexts.length)];
-                    teAmo.innerHTML = randomText;
-                    
-                    const startX = Math.random() * window.innerWidth;
-                    const startY = Math.random() * window.innerHeight;
-                    
-                    teAmo.style.cssText = `
-                        position: fixed;
-                        left: ${startX}px;
-                        top: ${startY}px;
-                        font-size: ${Math.random() * 2 + 1.5}rem;
-                        font-weight: bold;
-                        color: ${Math.random() > 0.5 ? '#ff0040' : '#ffd700'};
-                        z-index: 9998;
-                        pointer-events: none;
-                        animation: te-amo-float 3s ease-out forwards;
-                        text-shadow: 0 0 15px rgba(255, 0, 64, 0.8);
-                        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
-                    `;
-                    document.body.appendChild(teAmo);
-                    setTimeout(() => teAmo.remove(), 3000);
-                }, i * 200);
-            }
-
-            // Chuva de "TE AMO" pequenos
-            for (let i = 0; i < 15; i++) {
-                setTimeout(() => {
-                    const miniTeAmo = document.createElement('div');
-                    miniTeAmo.innerHTML = '💖 TE AMO';
-                    miniTeAmo.style.cssText = `
-                        position: fixed;
-                        left: ${Math.random() * 100}%;
-                        top: -50px;
-                        font-size: 1.2rem;
-                        color: #ff0040;
-                        z-index: 9997;
-                        pointer-events: none;
-                        animation: te-amo-rain ${Math.random() * 3 + 2}s linear forwards;
-                        text-shadow: 0 0 10px rgba(255, 0, 64, 0.6);
-                    `;
-                    document.body.appendChild(miniTeAmo);
-                    setTimeout(() => miniTeAmo.remove(), 5000);
-                }, i * 150);
-            }
-
-            // Efeito de pulso na tela
-            const pulseOverlay = document.createElement('div');
-            pulseOverlay.style.cssText = `
+        // chuva (era 15)
+        for (let i = 0; i < rainCount; i++) {
+            setTimeout(() => {
+            const miniTeAmo = document.createElement('div');
+            miniTeAmo.innerHTML = '💖 TE AMO';
+            miniTeAmo.style.cssText = `
                 position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: radial-gradient(circle, rgba(255, 0, 64, 0.1), transparent);
-                z-index: 9996;
+                left: ${Math.random() * 100}%;
+                top: -50px;
+                font-size: 1.1rem;
+                color: #ff0040;
+                z-index: 9997;
                 pointer-events: none;
-                animation: love-pulse 2s ease-in-out;
+                animation: te-amo-rain ${Math.random() * 1.6 + 1.8}s linear forwards;
+                text-shadow: 0 0 10px rgba(255, 0, 64, 0.6);
+                will-change: transform, opacity;
             `;
-            document.body.appendChild(pulseOverlay);
-            setTimeout(() => pulseOverlay.remove(), 2000);
+            document.body.appendChild(miniTeAmo);
+            setTimeout(() => miniTeAmo.remove(), 4000);
+            }, i * 220);
         }
 
-        // Explosão de corações vermelhos
-        function createHeartExplosion() {
-            const hearts = ['❤️', '💖', '💕', '💗', '💓', '💝', '♥️', '💘'];
-            
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.className = 'heart-explosion';
-                    heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
-                    heart.style.left = Math.random() * window.innerWidth + 'px';
-                    heart.style.top = Math.random() * window.innerHeight + 'px';
-                    heart.style.color = Math.random() > 0.5 ? '#ff0040' : '#ffd700';
-                    document.body.appendChild(heart);
-                    
-                    setTimeout(() => heart.remove(), 2000);
-                }, i * 100);
-            }
+        // pulso (mantém)
+        const pulseOverlay = document.createElement('div');
+        pulseOverlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 0, 64, 0.1), transparent);
+            z-index: 9996;
+            pointer-events: none;
+            animation: love-pulse 1.6s ease-in-out; /* era 2s */
+        `;
+        document.body.appendChild(pulseOverlay);
+        setTimeout(() => pulseOverlay.remove(), 1600);
         }
+
+        // Explosão de corações (SUBSTITUA A SUA)
+        function createHeartExplosion(count = 14) {
+        const hearts = ['❤️', '💖', '💕', '💗', '💓', '💝', '♥️', '💘'];
+
+        for (let i = 0; i < count; i++) {
+            setTimeout(() => {
+            const heart = document.createElement('div');
+            heart.className = 'heart-explosion';
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.top = Math.random() * window.innerHeight + 'px';
+            heart.style.color = Math.random() > 0.5 ? '#ff0040' : '#ffd700';
+            heart.style.willChange = 'transform, opacity';
+            document.body.appendChild(heart);
+
+            setTimeout(() => heart.remove(), 1800); // era 2000
+            }, i * 110);
+        }
+        }
+
 
         // Easter egg: triplo clique
         let clickCount = 0;
@@ -1787,7 +1795,7 @@
             hoverTimer = setTimeout(() => {
                 if (!achievements.longHover) {
                     achievements.longHover = true;
-                    showAchievement('💑Te amo a 31.563.000 segundos', 'de 20 de dezembro de 2025 para sempre!💕');
+                    showAchievement('💑Te amo a 31.563.000 segundos', 'de 20 de dezembro de 2024 para sempre!💕');
                 }
             }, 3000);
         });
